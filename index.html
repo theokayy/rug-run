@@ -92,6 +92,7 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
+            image-rendering: pixelated; 
         }
 
         .char-name {
@@ -234,9 +235,9 @@
             <div class="score-pill" id="score-display">Score: 0 | High: 0</div>
             
             <div>
-                <!-- REPLACE YOUR REFERRAL LINK HERE -->
-                <a href="https://cade.market" target="_blank" class="btn btn-green">
-                    Win $100K on Cade Market 🚀
+                <!-- Referral Link Added Here -->
+                <a href="https://cade.market/meme-madness/register?ref=knotheo&campaign=meme-madness-2026" target="_blank" class="btn btn-green">
+                    Win $120K on Cade Market 🚀
                 </a>
                 <button class="btn btn-dark" onclick="restartGame()">Try Again 🔄</button>
             </div>
@@ -308,10 +309,10 @@
     // Player Object
     const player = {
         x: 60,
-        y: 160,
-        baseY: 160,
-        width: 36,
-        height: 44,
+        y: 132,      // Adjusted so feet touch the ground
+        baseY: 132,  // New base level
+        width: 72,   // Massively increased width
+        height: 72,  // Massively increased height
         dy: 0,
         gravity: 0.65,
         jumpForce: -11,
@@ -322,7 +323,7 @@
             this.dy = 0;
             this.grounded = true;
             this.ducking = false;
-            this.height = 44;
+            this.height = 72; // Reset to massive height
         },
         jump() {
             if (this.grounded) {
@@ -334,8 +335,8 @@
         duck(isDucking) {
             if (this.grounded) {
                 this.ducking = isDucking;
-                this.height = isDucking ? 24 : 44;
-                this.y = isDucking ? this.baseY + 20 : this.baseY;
+                this.height = isDucking ? 40 : 72; // Duck height adjusted for bigger body
+                this.y = isDucking ? this.baseY + 32 : this.baseY; // Math to keep feet on ground when ducking
             } else if (isDucking) {
                 this.dy += 1.5;
             }
@@ -359,9 +360,9 @@
                 ctx.beginPath();
                 ctx.roundRect(this.x, this.y, this.width, this.height, 8);
                 ctx.fill();
-                ctx.font = `${this.ducking ? '16px' : '22px'} sans-serif`;
+                ctx.font = `${this.ducking ? '24px' : '36px'} sans-serif`;
                 ctx.textAlign = "center";
-                ctx.fillText(selectedChar.emoji, this.x + this.width / 2, this.y + (this.ducking ? 18 : 28));
+                ctx.fillText(selectedChar.emoji, this.x + this.width / 2, this.y + (this.ducking ? 28 : 46));
             }
         }
     };
@@ -462,6 +463,9 @@
 
     // Game Loop
     function loop() {
+        // Disabling image smoothing to keep sprites crisp
+        ctx.imageSmoothingEnabled = false; 
+
         ctx.fillStyle = "#0b0f19";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
