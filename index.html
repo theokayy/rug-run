@@ -83,8 +83,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
             background: #2e2e42;
+            overflow: hidden;
+            font-size: 1.5rem;
+        }
+
+        .char-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .char-name {
@@ -164,34 +171,48 @@
     <h1>The Rug Run</h1>
     <p class="subtitle">Dodge the Red Candles & Rugs | Meme Madness</p>
 
-    <!-- Character Grid -->
+    <!-- Character Grid with Image Previews and Emoji Fallbacks -->
     <div id="character-select">
-        <div class="char-card selected" onclick="selectCharacter('troll', '🔥', '#f97316')">
-            <div class="char-preview" style="background:#f97316">😈</div>
+        <div class="char-card selected" onclick="selectCharacter('troll', '😈', '#f97316')">
+            <div class="char-preview">
+                <img src="troll.png" alt="Troll" onerror="this.parentElement.innerHTML='😈'">
+            </div>
             <div class="char-name">Troll</div>
         </div>
-        <div class="char-card" onclick="selectCharacter('triple_t', '🪵', '#d97706')">
-            <div class="char-preview" style="background:#d97706">🗿</div>
+        <div class="char-card" onclick="selectCharacter('triple_t', '🗿', '#d97706')">
+            <div class="char-preview">
+                <img src="triple_t.png" alt="Triple T" onerror="this.parentElement.innerHTML='🗿'">
+            </div>
             <div class="char-name">Triple T</div>
         </div>
         <div class="char-card" onclick="selectCharacter('jimothy', '🦝', '#2563eb')">
-            <div class="char-preview" style="background:#2563eb">🦝</div>
+            <div class="char-preview">
+                <img src="jimothy.png" alt="Jimothy" onerror="this.parentElement.innerHTML='🦝'">
+            </div>
             <div class="char-name">Jimothy</div>
         </div>
         <div class="char-card" onclick="selectCharacter('neet', '🐸', '#16a34a')">
-            <div class="char-preview" style="background:#16a34a">🐸</div>
+            <div class="char-preview">
+                <img src="neet.png" alt="Neet" onerror="this.parentElement.innerHTML='🐸'">
+            </div>
             <div class="char-name">Neet</div>
         </div>
         <div class="char-card" onclick="selectCharacter('chillhouse', '🏠', '#64748b')">
-            <div class="char-preview" style="background:#64748b">🏠</div>
+            <div class="char-preview">
+                <img src="chillhouse.png" alt="Chillhouse" onerror="this.parentElement.innerHTML='🏠'">
+            </div>
             <div class="char-name">Chillhouse</div>
         </div>
         <div class="char-card" onclick="selectCharacter('ket', '🐱', '#9333ea')">
-            <div class="char-preview" style="background:#9333ea">🐱</div>
+            <div class="char-preview">
+                <img src="ket.png" alt="Ket" onerror="this.parentElement.innerHTML='🐱'">
+            </div>
             <div class="char-name">Ket</div>
         </div>
         <div class="char-card" onclick="selectCharacter('cupsey', '👶', '#10b981')">
-            <div class="char-preview" style="background:#10b981">👶</div>
+            <div class="char-preview">
+                <img src="cupsey.png" alt="Cupsey" onerror="this.parentElement.innerHTML='👶'">
+            </div>
             <div class="char-name">Cupsey</div>
         </div>
     </div>
@@ -227,7 +248,7 @@
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
 
-    // Audio FX Generator (No external MP3s needed)
+    // Audio FX Generator (Synthesized with Web Audio API)
     const AudioEngine = {
         ctx: null,
         init() {
@@ -259,7 +280,7 @@
     };
 
     // Game State
-    let state = "IDLE"; // IDLE, RUNNING, GAMEOVER
+    let state = "IDLE";
     let score = 0;
     let highScore = parseInt(localStorage.getItem("rug_run_highscore") || "0");
     let speed = 6;
@@ -316,7 +337,7 @@
                 this.height = isDucking ? 24 : 44;
                 this.y = isDucking ? this.baseY + 20 : this.baseY;
             } else if (isDucking) {
-                this.dy += 1.5; // Fast fall
+                this.dy += 1.5;
             }
         },
         update() {
@@ -331,7 +352,6 @@
             }
         },
         draw() {
-            // Check if PNG is loaded; fallback to stylized vector avatar
             if (selectedChar.img.complete && selectedChar.img.naturalWidth !== 0) {
                 ctx.drawImage(selectedChar.img, this.x, this.y, this.width, this.height);
             } else {
@@ -356,10 +376,9 @@
 
             if (this.type === "CANDLE") {
                 this.width = 18;
-                this.height = Math.floor(Math.random() * 25) + 35; // 35 - 60px
+                this.height = Math.floor(Math.random() * 25) + 35;
                 this.y = canvas.height - 36 - this.height;
             } else {
-                // Flying FUD cloud (must duck or time jump)
                 this.width = 34;
                 this.height = 20;
                 this.y = canvas.height - 36 - 55;
@@ -370,10 +389,8 @@
         }
         draw() {
             if (this.type === "CANDLE") {
-                // Candle Body (Red Candlestick)
                 ctx.fillStyle = "#ef4444";
                 ctx.fillRect(this.x, this.y, this.width, this.height);
-                // Wick
                 ctx.strokeStyle = "#fca5a5";
                 ctx.lineWidth = 2;
                 ctx.beginPath();
@@ -381,7 +398,6 @@
                 ctx.lineTo(this.x + this.width / 2, this.y + this.height + 8);
                 ctx.stroke();
             } else {
-                // FUD Cloud
                 ctx.fillStyle = "#6366f1";
                 ctx.beginPath();
                 ctx.roundRect(this.x, this.y, this.width, this.height, 6);
@@ -394,7 +410,7 @@
         }
     }
 
-    // Input Handling
+    // Input Listeners
     window.addEventListener("keydown", (e) => {
         if (e.code === "Space" || e.code === "ArrowUp") {
             if (state === "RUNNING") player.jump();
@@ -417,7 +433,7 @@
         e.preventDefault();
     }, { passive: false });
 
-    // Core Game Functions
+    // State Transitions
     function startGame() {
         state = "RUNNING";
         score = 0;
@@ -444,13 +460,11 @@
         document.getElementById("gameover-overlay").classList.remove("hidden");
     }
 
-    // Main Game Loop
+    // Game Loop
     function loop() {
-        // Clear screen
         ctx.fillStyle = "#0b0f19";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Ground Floor
         const groundY = canvas.height - 36;
         ctx.fillStyle = "#1e293b";
         ctx.fillRect(0, groundY, canvas.width, 36);
@@ -464,33 +478,27 @@
         if (state === "RUNNING") {
             frame++;
             if (frame % 5 === 0) score++;
-
-            // Increase speed gradually
             if (frame % 400 === 0 && speed < 14) speed += 0.5;
 
-            // Spawn Obstacles
             if (frame % Math.max(50, Math.floor(110 - speed * 4)) === 0) {
                 obstacles.push(new Obstacle());
             }
 
-            // Update & Draw Obstacles
             for (let i = obstacles.length - 1; i >= 0; i--) {
                 const obs = obstacles[i];
                 obs.speed = speed;
                 obs.update();
                 obs.draw();
 
-                // AABB Collision Detection
                 if (
                     player.x < obs.x + obs.width &&
                     player.x + player.width > obs.x &&
                     player.y < obs.y + obs.height &&
-                    player.y + player.height > obs.y
+                    player.height + player.y > obs.y
                 ) {
                     triggerGameOver();
                 }
 
-                // Clean offscreen items
                 if (obs.x + obs.width < 0) obstacles.splice(i, 1);
             }
 
@@ -499,7 +507,6 @@
 
         player.draw();
 
-        // HUD Score
         ctx.fillStyle = "#38bdf8";
         ctx.font = "bold 16px monospace";
         ctx.textAlign = "right";
